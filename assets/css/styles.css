@@ -1,0 +1,210 @@
+:root {
+            --sidebar-bg: rgb(215, 251, 255);
+            --main-bg: #fbfbfbff;
+            --text-dark: #2D2D2D;
+            --text-grey: #666666;
+            --text-light-grey: #888888;
+            --accent-purple: #3A3A60;
+            --divider-color: #E5E5E5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f7f7ff; /* Outer background */
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+            color: var(--text-grey);
+            line-height: 1.6;
+        }
+
+        .resume-container {
+            width: 1000px;
+            max-width: 100%;
+            background: #fff;
+            display: flex;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            overflow: hidden; /* Ensures rounded corners if added */
+            min-height: 1100px;
+        }
+
+        /* --- SIDEBAR STYLES --- */
+        .sidebar {
+            width: 32%;
+            background-color: var(--sidebar-bg);
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid rgba(0,0,0,0.02);
+        }
+
+        .profile-section {
+            margin-bottom: 30px;
+        }
+
+        .profile-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+            background-color: #ddd; /* Placeholder color */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .name {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+            letter-spacing: -0.5px;
+        }
+
+        .role {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-dark);
+            opacity: 0.8;
+        }
+
+        .divider {
+            height: 1px;
+            background-color: var(--divider-color);
+            margin: 30px 0;
+            width: 100%;
+        }
+
+        .contact-list, .social-list {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .icon-box {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #ffffffff;
+            color: #555;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .contact-text div:first-child {
+            font-size: 12px;
+            color: var(--text-light-grey);
+            margin-bottom: 2px;
+        }
+
+        .contact-text div:last-child {
+            font-size: 13px;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        /* Social Icons specific colors */
+        .social-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .social-icon {
+            color: white;
+            font-size: 16px;
+        }
+
+        .bg-insta { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+        .bg-dribbble { background-color: #EA4C89; }
+        .bg-linkedin { background-color: #0077B5; }
+
+        .social-text div:first-child {
+            font-size: 12px;
+            color: var(--text-light-grey);
+        }
+        
+        .social-text div:last-child {
+            font-size: 13px;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+
+        /* --- MAIN CONTENT STYLES --- */
+        .main-content {
+            width: 68%;
+            background-color: var(--main-bg);
+            padding: 60px 60px;
+        }
+
+        .section {
+            margin-bottom: 45px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--accent-purple);
+            margin-bottom: 20px;
+        }
+
+        .content-text {
+            font-size: 14px;
+            color: var(--text-grey);
+            margin-bottom: 10px;
+            line-height: 1.7;
+        }
+
+        .job-block {
+            margin-bottom: 25px;
+        }
+
+        .job-header {
+            margin-bottom: 8px;
+        }
+
+        .job-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .company-divider {
+            margin: 0 5px;
+            color: #999;
+            font-weight: 400;
+        }
+
+        .date-location {
+            font-size: 13px;
+            color: #888;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .resume-container {
+                flex-direction: column;
+                height: auto;
+            }
+            .sidebar, .main-content {
+                width: 100%;
+                padding: 30px;
+            }
+        }
