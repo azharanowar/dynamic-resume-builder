@@ -1,3 +1,10 @@
+<?php
+require_once 'admin/db_connect.php'; // Make sure this path is correct
+
+// Fetch profile data
+$profile_result = $mysqli->query("SELECT * FROM profile WHERE id = 1");
+$profile = $profile_result ? $profile_result->fetch_assoc() : null;
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,118 +23,152 @@
         
         <aside class="sidebar">
             <div class="profile-section">
-                <img src="assets/images/azhar-anowar.jpeg" alt="Azhar Anowar's Profile" class="profile-img">
-                <h1 class="name">Azhar Anowar</h1>
-                <p class="role">Web Developer</p>
+                <img src="<?php echo htmlspecialchars($profile['profile_image'] ?? 'assets/images/default-profile.png'); ?>" alt="Profile Picture" class="profile-img">
+                <h1 class="name"><?php echo htmlspecialchars($profile['full_name'] ?? 'Your Name'); ?></h1>
+                <p class="role"><?php echo htmlspecialchars($profile['role'] ?? 'Your Role'); ?></p>
             </div>
 
             <div class="divider"></div>
 
+            <?php if ($profile): ?>
             <div class="contact-list">
+                <?php if (!empty($profile['github_url'])): ?>
                 <div class="contact-item">
                     <div class="icon-box"><i class="fas fa-link"></i></div>
                     <div class="contact-text">
                         <div>Github</div>
-                        <div><a href="#" target="_blank">github.com/azharanowar</a></div>
+                        <div><a href="<?php echo htmlspecialchars($profile['github_url']); ?>" target="_blank"><?php echo preg_replace('#^https?://#', '', htmlspecialchars($profile['github_url'])); ?></a></div>
                     </div>
                 </div>
+                <?php endif; ?>
+                <?php if (!empty($profile['email'])): ?>
                 <div class="contact-item">
                     <div class="icon-box"><i class="fas fa-envelope"></i></div>
                     <div class="contact-text">
                         <div>Email</div>
-                        <div><a href="#" target="_blank">azharanowar@gmail.com</a></div>
+                        <div><a href="mailto:<?php echo htmlspecialchars($profile['email']); ?>"><?php echo htmlspecialchars($profile['email']); ?></a></div>
                     </div>
                 </div>
+                <?php endif; ?>
+                <?php if (!empty($profile['phone'])): ?>
                 <div class="contact-item">
                     <div class="icon-box"><i class="fas fa-phone-alt"></i></div>
                     <div class="contact-text">
                         <div>Phone</div>
-                        <div>010-5149-3665</div>
+                        <div><?php echo htmlspecialchars($profile['phone']); ?></div>
                     </div>
                 </div>
+                <?php endif; ?>
             </div>
 
             <div class="divider"></div>
 
             <div class="social-list">
-                <div class="contact-text" style="margin-bottom: -10px; font-size: 12px; color: #888;">Socials</div>
-                
-                <div class="social-item">
-                    <div class="icon-box bg-linkedin"><i class="fab fa-linkedin-in social-icon"></i></div>
-                    <div class="social-text">
-                        <div>Linkedin</div>
-                        <div><a href="#" target="_blank">azharanowar</a></div>
-                    </div>
-                </div>
+                <!-- Social links can be added here similarly if needed -->
             </div>
+            <?php endif; ?>
         </aside>
 
 
         <main class="main-content">
             
             <section class="section">
-                <h2 class="section-title">About Me</h2>
+                <h2 class="section-title">About</h2>
                 <p class="content-text">
-                    Experienced Product Designer and Frontend developer with over 5+ years of experience passionate about improving the lives of other people through great design, solving complex design problems to make technology useful, usable and beautiful for people globally.
+                    <?php echo nl2br(htmlspecialchars($profile['about_me'] ?? 'About me section.')); ?>
                 </p>
             </section>
 
             <section class="section">
                 <h2 class="section-title">Experience</h2>
 
-                <div class="job-block">
-                    <div class="job-header">
-                        <span class="job-title">Senior Product designer <span class="company-divider">|</span> Company</span>
-                        <div class="date-location">Start Date - End Date, Location</div>
-                    </div>
-                    <p class="content-text">
-                        Lorem ipsum dolor sit amet consectetur. Leo tempor tristique amet sagittis et. In nunc morbi magna tincidunt viverra sapien. Eget vel imperdiet lectus dignissim dui. Adipiscing duis nulla ullamcorper erat neque quis ultrices sit in. Imperdiet donec tortor augue est in ornare accumsan. Ullamcorper sit amet id ut diam.
-                    </p>
-                </div>
+                <?php
+                $sql = "SELECT *, DATE_FORMAT(start_date, '%b %Y') as formatted_start, DATE_FORMAT(end_date, '%b %Y') as formatted_end FROM experience ORDER BY start_date DESC";
+                if($result = $mysqli->query($sql)){
+                    if($result->num_rows > 0){
+                        while($row = $result->fetch_assoc()){
+                            $date_range = $row['formatted_start'] . ' - ';
+                            $date_range .= $row['end_date'] ? $row['formatted_end'] : 'Present';
+                ?>
+                            <div class="job-block">
+                                <div class="job-header">
+                                    <span class="job-title"><?php echo htmlspecialchars($row['job_title']); ?> <span class="company-divider">|</span> <?php echo htmlspecialchars($row['company_name']); ?></span>
+                                    <div class="date-location"><?php echo $date_range; ?></div>
+                                </div>
+                                <p class="content-text">
+                                    <?php echo nl2br(htmlspecialchars($row['description'])); ?>
+                                </p>
+                            </div>
+                <?php
+                        }
+                        $result->free();
+                    } else {
+                        echo '<p class="content-text">No professional experience has been added yet.</p>';
+                    }
+                } else {
+                    echo '<p class="content-text">Error fetching experience data.</p>';
+                }
+                ?>
 
-                <div class="job-block">
-                    <div class="job-header">
-                        <span class="job-title">Senior Product designer <span class="company-divider">|</span> Company</span>
-                        <div class="date-location">Start Date - End Date, Location</div>
-                    </div>
-                    <p class="content-text">
-                        Lorem ipsum dolor sit amet consectetur. Leo tempor tristique amet sagittis et. In nunc morbi magna tincidunt viverra sapien. Eget vel imperdiet lectus dignissim dui. Adipiscing duis nulla ullamcorper erat neque quis ultrices sit in. Imperdiet donec tortor augue est in ornare accumsan.
-                    </p>
-                </div>
-
-                <div class="job-block">
-                    <div class="job-header">
-                        <span class="job-title">Senior Product designer <span class="company-divider">|</span> Company</span>
-                        <div class="date-location">Start Date - End Date, Location</div>
-                    </div>
-                    <p class="content-text">
-                        Lorem ipsum dolor sit amet consectetur. Leo tempor tristique amet sagittis et. In nunc morbi magna tincidunt viverra sapien. Eget vel imperdiet lectus dignissim dui. Adipiscing duis nulla ullamcorper erat neque quis ultrices sit in. Imperdiet donec tortor augue est in ornare accumsan.
-                    </p>
-                </div>
             </section>
 
             <section class="section">
                 <h2 class="section-title">Education</h2>
-                <div class="job-block">
-                    <div class="job-header">
-                        <span class="job-title">Master of Arts</span>
-                        <div class="date-location">Graduation Date, Location</div>
-                    </div>
-                    <p class="content-text">
-                        Lorem ipsum dolor sit amet consectetur. Leo tempor tristique amet sagittis et. In nunc morbi magna tincidunt viverra sapien. Eget vel imperdiet lectus dignissim dui. Adipiscing duis nulla ullamcorper erat neque quis ultrices sit in.
-                    </p>
-                </div>
+                <?php
+                $sql = "SELECT *, DATE_FORMAT(graduation_date, '%b %Y') as formatted_grad_date FROM education ORDER BY graduation_date DESC";
+                if($result = $mysqli->query($sql)){
+                    if($result->num_rows > 0){
+                        while($row = $result->fetch_assoc()){
+                ?>
+                            <div class="job-block">
+                                <div class="job-header">
+                                    <span class="job-title"><?php echo htmlspecialchars($row['degree']); ?> <span class="company-divider">|</span> <?php echo htmlspecialchars($row['institution']); ?></span>
+                                    <div class="date-location"><?php echo $row['formatted_grad_date']; ?></div>
+                                </div>
+                                <?php if(!empty($row['description'])): ?>
+                                <p class="content-text">
+                                    <?php echo nl2br(htmlspecialchars($row['description'])); ?>
+                                </p>
+                                <?php endif; ?>
+                            </div>
+                <?php
+                        }
+                        $result->free();
+                    } else {
+                        echo '<p class="content-text">No education history has been added yet.</p>';
+                    }
+                } else {
+                    echo '<p class="content-text">Error fetching education data.</p>';
+                }
+                ?>
             </section>
 
             <section class="section" style="margin-bottom: 0;">
                 <h2 class="section-title">Certifications</h2>
-                <p class="content-text">
-                    Lorem ipsum dolor sit amet consectetur. Leo tempor tristique amet sagittis et. In nunc morbi magna tincidunt viverra sapien. Eget vel imperdiet lectus dignissim dui. Adipiscing duis nulla ullamcorper erat neque quis ultrices sit in. Imperdiet donec tortor augue est in ornare accumsan.
-                </p>
+                <ul class="certification-list">
+                <?php
+                $sql = "SELECT *, DATE_FORMAT(issue_date, '%b %Y') as formatted_issue_date FROM certifications ORDER BY issue_date DESC";
+                if($result = $mysqli->query($sql)){
+                    if($result->num_rows > 0){
+                        while($row = $result->fetch_assoc()){
+                            echo '<li class="certification-item content-text">' . htmlspecialchars($row['name']) . ' - <strong>' . htmlspecialchars($row['authority']) . '</strong> (' . $row['formatted_issue_date'] . ')</li>';
+                        }
+                        $result->free();
+                    } else {
+                        echo '<p class="content-text">No certifications have been added yet.</p>';
+                    }
+                } else {
+                    echo '<p class="content-text">Error fetching certifications data.</p>';
+                }
+                ?>
+                </ul>
             </section>
 
         </main>
     </div>
-
+<?php
+    // Close connection
+    $mysqli->close();
+?>
 </body>
 </html>
