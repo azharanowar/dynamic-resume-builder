@@ -18,7 +18,6 @@ $profile = $profile_result ? $profile_result->fetch_assoc() : null;
     <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
-
     <?php if (!$profile): ?>
     <div class="resume-container" style="text-align: center; padding: 50px; display: block;">
         <h1>Welcome to Dynamic Resume Builder!</h1>
@@ -177,13 +176,21 @@ $profile = $profile_result ? $profile_result->fetch_assoc() : null;
                 ?>
                 </div>
             </section>
+            
 
         </main>
     </div>
     <?php endif; ?>
+  
 <?php
     // Close connection
     $mysqli->close();
 ?>
+
 </body>
 </html>
+
+<div class="admin-login-details">
+    <h3>Admin credentials for customization: <a href="admin/" target="_blank">Admin Panel</a></h3>
+    <p>Email: azharanowar@gmail.com, Password: 123</p>
+</div>

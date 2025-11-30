@@ -6,6 +6,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
     min-height: 100vh;
     padding: 20px;
     box-sizing: border-box;
@@ -16,6 +17,18 @@ body {
     width: 100%;
     max-width: 1024px;
     min-height: 90vh;
+    background-color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.admin-login-details {
+    width: 100%;
+    max-width: 1024px;
+    min-height: 200px;
+    margin: 20px;
+    padding: 15px;    
     background-color: #fff;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
