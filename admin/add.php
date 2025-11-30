@@ -5,7 +5,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     exit;
 }
 
-require_once "db_connect.php";
+require_once "includes/db_connect.php";
 
 $type = $_GET['type'] ?? '';
 $page_title = "Add New " . ucfirst($type);
@@ -25,20 +25,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             break;
         case 'education':
-            $sql = "INSERT INTO education (degree, institution, graduation_year) VALUES (?, ?, ?)";
+            $sql = "INSERT INTO education (degree, institution, start_date, graduation_date, description) VALUES (?, ?, ?, ?, ?)";
             if ($stmt = $mysqli->prepare($sql)) {
-                $stmt->bind_param("ssi", $degree, $institution, $graduation_year);
+                $stmt->bind_param("sssss", $degree, $institution, $start_date, $graduation_date, $description);
                 $degree = $_POST['degree'];
                 $institution = $_POST['institution'];
-                $graduation_year = $_POST['graduation_year'];
+                $start_date = $_POST['start_date'];
+                $graduation_date = empty($_POST['graduation_date']) ? null : $_POST['graduation_date'];
+                $description = $_POST['description'];
                 $stmt->execute();
             }
             break;
         case 'skill':
-            $sql = "INSERT INTO skills (skill_name, proficiency) VALUES (?, ?)";
+            $sql = "INSERT INTO skills (name, proficiency) VALUES (?, ?)";
             if ($stmt = $mysqli->prepare($sql)) {
-                $stmt->bind_param("si", $skill_name, $proficiency);
-                $skill_name = $_POST['skill_name'];
+                $stmt->bind_param("si", $name, $proficiency);
+                $name = $_POST['name'];
                 $proficiency = $_POST['proficiency'];
                 $stmt->execute();
             }
@@ -96,13 +98,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <input type="text" name="institution" class="form-control" required>
                 </div>
                 <div class="form-group">
-                    <label>Graduation Year</label>
-                    <input type="number" name="graduation_year" class="form-control" min="1900" max="2099" step="1" required>
+                    <label>Start Date</label>
+                    <input type="date" name="start_date" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Graduation Date (leave blank for present)</label>
+                    <input type="date" name="graduation_date" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Description (Optional)</label>
+                    <textarea name="description" class="form-control" rows="5"></textarea>
                 </div>
             <?php elseif ($type == 'skill'): ?>
                 <div class="form-group">
                     <label>Skill Name</label>
-                    <input type="text" name="skill_name" class="form-control" required>
+                    <input type="text" name="name" class="form-control" required>
                 </div>
                 <div class="form-group">
                     <label>Proficiency (%)</label>
@@ -114,7 +124,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <?php if (in_array($type, ['experience', 'education', 'skill'])): ?>
                 <input type="submit" class="btn btn-primary" value="Submit">
-                <a href="admin.php" class="btn btn-secondary">Cancel</a>
+                <a href="admin.php" class="btn btn-danger">Cancel</a>
             <?php endif; ?>
         </form>
     </div>

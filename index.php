@@ -1,5 +1,5 @@
 <?php
-require_once 'admin/db_connect.php'; // Make sure this path is correct
+require_once 'admin/includes/db_connect.php'; 
 
 // Fetch profile data
 $profile_result = $mysqli->query("SELECT * FROM profile WHERE id = 1");
@@ -19,18 +19,24 @@ $profile = $profile_result ? $profile_result->fetch_assoc() : null;
 </head>
 <body>
 
+    <?php if (!$profile): ?>
+    <div class="resume-container" style="text-align: center; padding: 50px; display: block;">
+        <h1>Welcome to Dynamic Resume Builder!</h1>
+        <p>Your resume is not yet configured.</p>
+        <p>Please log in to the <a href="admin/login.php">admin panel</a> to add your information.</p>
+    </div>
+    <?php else: ?>
     <div class="resume-container">
         
         <aside class="sidebar">
             <div class="profile-section">
-                <img src="<?php echo htmlspecialchars($profile['profile_image'] ?? 'assets/images/default-profile.png'); ?>" alt="Profile Picture" class="profile-img">
+                <img src="<?php echo 'admin/' . htmlspecialchars($profile['profile_image'] ?? 'assets/images/default-profile.png'); ?>" alt="Profile Picture" class="profile-img">
                 <h1 class="name"><?php echo htmlspecialchars($profile['full_name'] ?? 'Your Name'); ?></h1>
                 <p class="role"><?php echo htmlspecialchars($profile['role'] ?? 'Your Role'); ?></p>
             </div>
 
             <div class="divider"></div>
 
-            <?php if ($profile): ?>
             <div class="contact-list">
                 <?php if (!empty($profile['github_url'])): ?>
                 <div class="contact-item">
@@ -66,7 +72,6 @@ $profile = $profile_result ? $profile_result->fetch_assoc() : null;
             <div class="social-list">
                 <!-- Social links can be added here similarly if needed -->
             </div>
-            <?php endif; ?>
         </aside>
 
 
@@ -115,15 +120,17 @@ $profile = $profile_result ? $profile_result->fetch_assoc() : null;
             <section class="section">
                 <h2 class="section-title">Education</h2>
                 <?php
-                $sql = "SELECT *, DATE_FORMAT(graduation_date, '%b %Y') as formatted_grad_date FROM education ORDER BY graduation_date DESC";
+                $sql = "SELECT *, DATE_FORMAT(start_date, '%b %Y') as formatted_start, DATE_FORMAT(graduation_date, '%b %Y') as formatted_grad FROM education ORDER BY start_date DESC";
                 if($result = $mysqli->query($sql)){
                     if($result->num_rows > 0){
                         while($row = $result->fetch_assoc()){
+                            $date_range = $row['formatted_start'] . ' - ';
+                            $date_range .= $row['graduation_date'] ? $row['formatted_grad'] : 'Present';
                 ?>
                             <div class="job-block">
                                 <div class="job-header">
                                     <span class="job-title"><?php echo htmlspecialchars($row['degree']); ?> <span class="company-divider">|</span> <?php echo htmlspecialchars($row['institution']); ?></span>
-                                    <div class="date-location"><?php echo $row['formatted_grad_date']; ?></div>
+                                    <div class="date-location"><?php echo $date_range; ?></div>
                                 </div>
                                 <?php if(!empty($row['description'])): ?>
                                 <p class="content-text">
@@ -144,28 +151,36 @@ $profile = $profile_result ? $profile_result->fetch_assoc() : null;
             </section>
 
             <section class="section" style="margin-bottom: 0;">
-                <h2 class="section-title">Certifications</h2>
-                <ul class="certification-list">
+                <h2 class="section-title">Skills</h2>
+                <div class="skills-list">
                 <?php
-                $sql = "SELECT *, DATE_FORMAT(issue_date, '%b %Y') as formatted_issue_date FROM certifications ORDER BY issue_date DESC";
+                $sql = "SELECT name, proficiency FROM skills ORDER BY proficiency DESC";
                 if($result = $mysqli->query($sql)){
                     if($result->num_rows > 0){
                         while($row = $result->fetch_assoc()){
-                            echo '<li class="certification-item content-text">' . htmlspecialchars($row['name']) . ' - <strong>' . htmlspecialchars($row['authority']) . '</strong> (' . $row['formatted_issue_date'] . ')</li>';
+                ?>
+                        <div class="skill-item">
+                            <span class="skill-name"><?php echo htmlspecialchars($row['name']); ?></span>
+                            <div class="skill-bar">
+                                <div class="skill-level" style="width: <?php echo $row['proficiency']; ?>%;"></div>
+                            </div>
+                        </div>
+                <?php
                         }
                         $result->free();
                     } else {
-                        echo '<p class="content-text">No certifications have been added yet.</p>';
+                        echo '<p class="content-text">No skills have been added yet.</p>';
                     }
                 } else {
-                    echo '<p class="content-text">Error fetching certifications data.</p>';
+                    echo '<p class="content-text">Error fetching skills data.</p>';
                 }
                 ?>
-                </ul>
+                </div>
             </section>
 
         </main>
     </div>
+    <?php endif; ?>
 <?php
     // Close connection
     $mysqli->close();

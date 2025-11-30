@@ -175,11 +175,24 @@ body {
     white-space: nowrap;
 }
 
-.certification-list {
-    list-style: none;
-    padding-left: 0;
+.skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
 }
 
-.certification-item {
-    margin-bottom: 10px;
+.skill-item {
+    width: calc(50% - 10px);
 }
+
+.skill-name {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.skill-bar { background-color: #e0e0e0; border-radius: 5px; height: 8px; }
+.skill-level { background-color: #333; height: 8px; border-radius: 5px; }
+
+/* You can add the rest of your styles.css content here */
+

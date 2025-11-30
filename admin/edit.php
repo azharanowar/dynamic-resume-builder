@@ -5,7 +5,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     exit;
 }
 
-require_once "db_connect.php";
+require_once "includes/db_connect.php";
 
 $type = $_GET['type'] ?? '';
 $id = $_GET['id'] ?? 0;
@@ -66,21 +66,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             break;
         case 'education':
-            $sql = "UPDATE education SET degree = ?, institution = ?, graduation_year = ? WHERE id = ?";
+            $sql = "UPDATE education SET degree = ?, institution = ?, start_date = ?, graduation_date = ?, description = ? WHERE id = ?";
             if ($stmt = $mysqli->prepare($sql)) {
-                $stmt->bind_param("ssii", $degree, $institution, $graduation_year, $id);
+                $stmt->bind_param("sssssi", $degree, $institution, $start_date, $graduation_date, $description, $id);
                 $degree = $_POST['degree'];
                 $institution = $_POST['institution'];
-                $graduation_year = $_POST['graduation_year'];
+                $start_date = $_POST['start_date'];
+                $graduation_date = empty($_POST['graduation_date']) ? null : $_POST['graduation_date'];
+                $description = $_POST['description'];
                 $id = $_POST['id'];
                 $stmt->execute();
             }
             break;
         case 'skill':
-            $sql = "UPDATE skills SET skill_name = ?, proficiency = ? WHERE id = ?";
+            $sql = "UPDATE skills SET name = ?, proficiency = ? WHERE id = ?";
             if ($stmt = $mysqli->prepare($sql)) {
-                $stmt->bind_param("sii", $skill_name, $proficiency, $id);
-                $skill_name = $_POST['skill_name'];
+                $stmt->bind_param("sii", $name, $proficiency, $id);
+                $name = $_POST['name'];
                 $proficiency = $_POST['proficiency'];
                 $id = $_POST['id'];
                 $stmt->execute();
@@ -145,13 +147,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <input type="text" name="institution" class="form-control" value="<?php echo htmlspecialchars($data['institution']); ?>" required>
                 </div>
                 <div class="form-group">
-                    <label>Graduation Year</label>
-                    <input type="number" name="graduation_year" class="form-control" min="1900" max="2099" step="1" value="<?php echo htmlspecialchars($data['graduation_year']); ?>" required>
+                    <label>Start Date</label>
+                    <input type="date" name="start_date" class="form-control" value="<?php echo htmlspecialchars($data['start_date'] ?? ''); ?>" required>
+                </div>
+                <div class="form-group">
+                    <label>Graduation Date (leave blank for present)</label>
+                    <input type="date" name="graduation_date" class="form-control" value="<?php echo htmlspecialchars($data['graduation_date'] ?? ''); ?>">
+                </div>
+                <div class="form-group">
+                    <label>Description (Optional)</label>
+                    <textarea name="description" class="form-control" rows="5"><?php echo htmlspecialchars($data['description'] ?? ''); ?></textarea>
                 </div>
             <?php elseif ($type == 'skill'): ?>
                 <div class="form-group">
                     <label>Skill Name</label>
-                    <input type="text" name="skill_name" class="form-control" value="<?php echo htmlspecialchars($data['skill_name']); ?>" required>
+                    <input type="text" name="name" class="form-control" value="<?php echo htmlspecialchars($data['name']); ?>" required>
                 </div>
                 <div class="form-group">
                     <label>Proficiency (%)</label>
@@ -160,7 +170,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <?php endif; ?>
 
             <input type="submit" class="btn btn-primary" value="Update">
-            <a href="admin.php" class="btn btn-secondary">Cancel</a>
+            <a href="admin.php" class="btn btn-danger">Cancel</a>
         </form>
     </div>
 </body>

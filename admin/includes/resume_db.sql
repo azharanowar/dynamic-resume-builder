@@ -5,27 +5,6 @@ USE `resume_db`;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `certifications`
---
-
-CREATE TABLE `certifications` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `authority` varchar(255) NOT NULL,
-  `issue_date` date NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `certifications`
---
-
-INSERT INTO `certifications` (`id`, `name`, `authority`, `issue_date`) VALUES
-(1, 'Certified Laravel Developer', 'Laracasts', '2021-07-10');
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `education`
 --
 
@@ -33,17 +12,18 @@ CREATE TABLE `education` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `degree` varchar(255) NOT NULL,
   `institution` varchar(255) NOT NULL,
-  `graduation_date` date NOT NULL,
+  `start_date` date NOT NULL,
+  `graduation_date` date DEFAULT NULL,
   `description` text DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `education`
+-- Dumping data for table `education` (with a sample start_date)
 --
 
-INSERT INTO `education` (`id`, `degree`, `institution`, `graduation_date`, `description`) VALUES
-(1, 'B.Sc. in Computer Science', 'University of Technology', '2018-05-20', 'Focused on software engineering, database management, and web technologies.');
+INSERT INTO `education` (`id`, `degree`, `institution`, `start_date`, `graduation_date`, `description`) VALUES
+(1, 'B.Sc. in Computer Science', 'University of Technology', '2014-09-01', '2018-05-20', 'Focused on software engineering, database management, and web technologies.');
 
 -- --------------------------------------------------------
 
@@ -80,7 +60,6 @@ CREATE TABLE `profile` (
   `full_name` varchar(255) NOT NULL,
   `role` varchar(255) NOT NULL,
   `about_me` text NOT NULL,
-  `profile_image` varchar(255) DEFAULT 'assets/images/default-profile.png',
   `github_url` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
   `phone` varchar(50) DEFAULT NULL,
@@ -92,8 +71,30 @@ CREATE TABLE `profile` (
 -- Dumping data for table `profile`
 --
 
-INSERT INTO `profile` (`id`, `full_name`, `role`, `about_me`, `profile_image`, `github_url`, `email`, `phone`, `linkedin_url`) VALUES
-(1, 'Azhar Anowar', 'Full Stack Web Developer', 'A passionate and creative full-stack developer with a knack for building elegant and efficient web applications. I have experience in both front-end and back-end technologies, and I am always eager to learn new things and take on challenging projects.', 'assets/images/azhar-anowar.jpeg', 'https://github.com/azharanowar', 'azharanowar@gmail.com', '010-5149-3665', 'https://linkedin.com/in/azharanowar');
+INSERT INTO `profile` (`id`, `full_name`, `role`, `about_me`, `github_url`, `email`, `phone`, `linkedin_url`) VALUES
+(1, 'Azhar Anowar', 'Full Stack Web Developer', 'A passionate and creative full-stack developer with a knack for building elegant and efficient web applications. I have experience in both front-end and back-end technologies, and I am always eager to learn new things and take on challenging projects.', 'https://github.com/azharanowar', 'azharanowar@gmail.com', '010-5149-3665', 'https://linkedin.com/in/azharanowar');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `skills`
+--
+
+CREATE TABLE `skills` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `proficiency` int(3) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `skills`
+--
+
+INSERT INTO `skills` (`id`, `name`, `proficiency`) VALUES
+(1, 'PHP', 90),
+(2, 'Laravel', 85),
+(3, 'JavaScript', 80);
 
 -- --------------------------------------------------------
 
@@ -117,3 +118,6 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `email`, `password`) VALUES
 (1, 'azharanowar@gmail.com', '$2y$10$SebxqUzYyqsHtoIGiP4Yp.kW8TEAc5cAY.haJr1NGZ8w6tW/p81hm');
 
+
+
+ALTER TABLE `profile` ADD `profile_image` VARCHAR(255) NULL DEFAULT NULL AFTER `full_name`;
